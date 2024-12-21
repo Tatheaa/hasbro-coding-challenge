@@ -1,0 +1,205 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
+@viewport {
+  width: device-width;
+  zoom: 1;
+}
+
+body {
+  border: 1px solid #191b1c;
+  margin: 1rem;
+  background-color: black;
+  padding: 1rem;
+}
+
+h1 {
+  text-align: center;
+  background-color: #191b1c;
+  color: white;
+  font-weight: normal;
+  padding: 0.5rem;
+  font-size: 1.5rem;
+}
+
+h3 {
+  color: white;
+  font-weight: normal;
+}
+
+.app-container {
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+}
+
+.main-content-wrapper {
+  display: flex;
+  flex-direction: row;
+  margin-top: 3rem;
+}
+
+.talent-tree-container {
+  flex: 2;
+  margin-left: 1rem;
+}
+
+.talent-tree-path-container {
+  display: flex;
+  margin-bottom: 3rem;
+}
+
+.talent-tree-path-name {
+  font-size: 0.7rem;
+  margin-right: 2rem;
+  margin-top: 1.2rem;
+}
+
+.rune-wrapper {
+  position: relative;
+  width: 58px;
+  height: 56px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 8px 5px rgba(105, 148, 191, 0.4);
+}
+
+.rune-wrapper::before,
+.rune-wrapper::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  z-index: 1;
+  left: 0;
+}
+
+.rune-wrapper::before {
+  top: 0;
+  background-color: #6994bf;
+}
+
+.rune-wrapper::after {
+  bottom: 0;
+  top: auto;
+  background: linear-gradient(to bottom, #243d56, #6994bf);
+}
+.rune-wrapper.inactive {
+  box-shadow: none; /* Remove box-shadow for inactive runes */
+}
+.rune-wrapper.inactive::before {
+  top: 0;
+  background: #616363;
+}
+
+.rune-wrapper.inactive::after {
+  bottom: 0;
+  top: auto;
+  background: linear-gradient(to bottom, #474949, #616363);
+}
+
+.rune {
+  position: relative;
+  z-index: 2;
+  width: 50px;
+  height: 50px;
+  display: block;
+  cursor: pointer; /* Add cursor pointer to indicate clickable */
+  transition: transform 0.2s;
+}
+
+.rune:hover {
+  background-position-y: 0px !important;
+  /*transform: scale(1.1);*/
+}
+
+.rune-connection {
+  background-color: #191b1c;
+  border: 1px solid #232424;
+  height: 0.8rem;
+  width: 5rem;
+  margin: 1.4rem 0;
+}
+
+.rune-connection.active {
+  background-color: #3e3f40;
+  border: 1px solid #616363;
+}
+
+.point-total-wrapper {
+  color: white;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2.5rem;
+  font-size: 1.3rem;
+}
+
+.point-total-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #131415;
+  padding: 1rem;
+}
+
+.point-total-label {
+  color: #364e66;
+  font-weight: 300;
+}
+
+.error-message {
+  color: #a42739;
+  text-align: center;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* Added media query for mobile devices */
+@media screen and (max-width: 768px) {
+  body {
+    margin: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    padding: 0.3rem;
+  }
+
+  .main-content-wrapper {
+    flex-direction: column;
+    margin-top: 1rem;
+  }
+
+  .talent-tree-container {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+
+  .talent-tree-path-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .talent-tree-path-name {
+    margin-right: 0;
+    text-align: center;
+  }
+
+  .rune-connection {
+    transform: rotate(90deg);
+    margin: 1.5rem 0;
+  }
+
+  .point-total-container {
+    padding-top: 1rem;
+  }
+}
