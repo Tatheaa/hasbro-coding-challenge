@@ -1,13 +1,17 @@
 import React from "react";
 import Rune from "./Rune";
 
-const TalentTree = ({ runeIds, pathId, runeState, handleClick }) => {
+const TalentTreePath = ({ runeIds, pathId, runeState, handleRuneClick }) => {
   return (
     <div className="talent-tree-path-container">
       <h3 className="talent-tree-path-name">TALENT PATH {pathId}</h3>
       {runeIds.map((id, index) => (
-        <React.Fragment key={index}>
-          <Rune id={id} isActive={runeState[id]} handleClick={handleClick} />
+        <React.Fragment key={`runeId-${index}`}>
+          <Rune
+            id={id}
+            isActive={runeState[id]}
+            handleRuneClick={handleRuneClick}
+          />
           {index !== 3 && (
             //Verify if rune before and after the connector are active, if so, use active class
             <span
@@ -24,4 +28,4 @@ const TalentTree = ({ runeIds, pathId, runeState, handleClick }) => {
   );
 };
 
-export default TalentTree;
+export default TalentTreePath;

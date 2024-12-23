@@ -1,99 +1,95 @@
 import "../App.css";
-import React, { useState } from "react";
-import TalentTree from "./TalentTree";
+import React, { useCallback, useState } from "react";
+import TalentTreePath from "./TalentTreePath";
 import PointTotal from "./PointTotal";
-import getRuneValuesBeforeOrAfter from "../helper";
+import { getRuneValuesBeforeOrAfter } from "../helper";
+
+const PATH_1_RUNE_IDS = [0, 1, 2, 3];
+const PATH_2_RUNE_IDS = [4, 5, 6, 7];
+const MAX_RUNES_ALLOWED = 6;
 
 const App = () => {
-  const path1RuneIds = [0, 1, 2, 3];
-  const path2RuneIds = [4, 5, 6, 7];
-
   const [runeState, setRuneState] = useState(
-    [...path1RuneIds, ...path2RuneIds].reduce((defaultRuneState, id) => {
+    [...PATH_1_RUNE_IDS, ...PATH_2_RUNE_IDS].reduce((defaultRuneState, id) => {
       defaultRuneState[id] = false;
       return defaultRuneState;
     }, {})
   );
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleClick = (id, isRightClick = false) => {
-    // Handle right click
-    if (isRightClick) {
-      const runeValuesAfter = getRuneValuesBeforeOrAfter(
-        [path1RuneIds, path2RuneIds],
-        id,
-        false
-      );
+  const handleRuneClick = useCallback(
+    (id, isRightClick = false) => {
+      // Clear any existing error messages
+      setErrorMessage("");
 
-      // Check if any runes after this one are active
-      const hasActiveRunesAfter = runeValuesAfter.some(
-        (runeId) => runeState[runeId]
-      );
+      if (!isRightClick && runeState[id]) return; // Left click, but Rune is already active
+      if (isRightClick && !runeState[id]) return; // Right click, but Rune is already inactive
 
-      if (runeState[id]) {
-        // Only allow deactivation if no runes after this one are active
-        if (!hasActiveRunesAfter) {
-          setRuneState((prev) => ({ ...prev, [id]: false }));
-          setErrorMessage("");
-        } else {
+      //Right click - handle deactivation
+      if (isRightClick) {
+        // Check if there are any active runes after the selected one
+        if (
+          getRuneValuesBeforeOrAfter(
+            [PATH_1_RUNE_IDS, PATH_2_RUNE_IDS],
+            id,
+            false
+          ).some((rid) => runeState[rid])
+        ) {
           setErrorMessage(
             "Cannot deactivate a rune that has active runes after it"
           );
+          return;
         }
+        setRuneState((prev) => ({ ...prev, [id]: false }));
+        return;
       }
-      return;
-    }
 
-    // Handle left click
-    // If rune is already selected, do nothing
-    if (runeState[id]) {
-      return;
-    }
-    // If 6 runes are already selected, display error message
-    if (
-      Object.values(runeState).filter(Boolean).length === 6 &&
-      !runeState[id]
-    ) {
-      setErrorMessage("You can only select up to 6 runes");
-      return;
-    }
-    const runeValuesBefore = getRuneValuesBeforeOrAfter(
-      [path1RuneIds, path2RuneIds],
-      id,
-      true
-    );
+      // Left click - handle activation
+      //First, check if user already selected max runes
+      if (
+        Object.values(runeState).filter(Boolean).length === MAX_RUNES_ALLOWED
+      ) {
+        setErrorMessage("You can only select up to 6 runes");
+        return;
+      }
 
-    // Check if any runes before this one are inactive
-    const hasInactiveRunesBefore = runeValuesBefore.some(
-      (runeId) => !runeState[runeId]
-    );
-    // Only allow activation if no runes before this one are inactive
-    if (hasInactiveRunesBefore) {
-      setErrorMessage("Cannot select a rune that has inactive runes before it");
-      return;
-    }
-    setRuneState((prev) => ({ ...prev, [id]: !prev[id] }));
-    setErrorMessage("");
-  };
+      //Check if there are any inactive runes before the selected one
+      if (
+        getRuneValuesBeforeOrAfter(
+          [PATH_1_RUNE_IDS, PATH_2_RUNE_IDS],
+          id,
+          true
+        ).some((rid) => !runeState[rid])
+      ) {
+        setErrorMessage(
+          "Cannot select a rune that has inactive runes before it"
+        );
+        return;
+      }
+
+      setRuneState((prev) => ({ ...prev, [id]: true }));
+    },
+    [runeState]
+  );
 
   return (
     <div className="app-container">
       <h1>TitanStar Legends - Rune Mastery Loadout Talent Calculator 9000</h1>
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      <p className="error-message">{errorMessage}</p>
 
       <div className="main-content-wrapper">
         <div className="talent-tree-container">
-          <TalentTree
-            runeIds={path1RuneIds}
+          <TalentTreePath
+            runeIds={PATH_1_RUNE_IDS}
             pathId={1}
             runeState={runeState}
-            handleClick={handleClick}
+            handleRuneClick={handleRuneClick}
           />
-          <TalentTree
-            runeIds={path2RuneIds}
+          <TalentTreePath
+            runeIds={PATH_2_RUNE_IDS}
             pathId={2}
             runeState={runeState}
-            handleClick={handleClick}
+            handleRuneClick={handleRuneClick}
           />
         </div>
 
